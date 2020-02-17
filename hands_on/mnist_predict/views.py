@@ -1,8 +1,16 @@
+from logging import getLogger
+
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse, reverse_lazy
 from django.views.generic import CreateView, ListView, DetailView, DeleteView, UpdateView
+from django.http import HttpResponseRedirect
+from django_celery_results.models import TaskResult
+
 from .models import PredictNumber
-from hands_on.mnist_predict.tasks import predict_number
+from hands_on.mnist_predict.tasks import predict_number_task
+
+
+logger = getLogger(__name__)
 
 
 class PredictNumberListView(ListView):
@@ -12,6 +20,11 @@ class PredictNumberListView(ListView):
 class PredictNumberDetailView(DetailView):
     model = PredictNumber
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        logger.info(TaskResult.objects.all())
+        return context
+
 
 class PredictNumberCreateView(CreateView):
     model = PredictNumber
@@ -20,7 +33,7 @@ class PredictNumberCreateView(CreateView):
 
     def form_valid(self, form):
         self.object = form.save()
-        task = predict_number.delay(self.object.id, current_scheme_host=self.request._current_scheme_host)
+        task = predict_number_task.delay(self.object.id, current_scheme_host=self.request._current_scheme_host)
         self.task_id = task.id
         return super().form_valid(form)
 
@@ -41,8 +54,9 @@ class PredictNumberUpdateView(UpdateView):
 
     def form_valid(self, form):
         self.object = form.save()
-        task = predict_number.delay(self.object.id, current_scheme_host=self.request._current_scheme_host)
+        task = predict_number_task.delay(self.object.id, current_scheme_host=self.request._current_scheme_host)
         self.task_id = task.id
+        logger.info(TaskResult.objects.get_task(self.task_id))
         return super().form_valid(form)
 
     def get_context_data(self, **kwargs):

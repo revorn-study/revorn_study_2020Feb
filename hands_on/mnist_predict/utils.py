@@ -5,8 +5,6 @@ from keras.preprocessing import image
 
 
 def load_image(url, target_size=(28, 28), current_scheme_host=None):
-    print(url)
-    print(current_scheme_host)
     try:
         with urllib.request.urlopen(url) as response:
             img = image.load_img(BytesIO(response.read()), grayscale=True, target_size=target_size)
@@ -18,5 +16,5 @@ def load_image(url, target_size=(28, 28), current_scheme_host=None):
             with urllib.request.urlopen('http://django:8000' + url) as response:
                 img = image.load_img(BytesIO(response.read()), grayscale=True, target_size=target_size)
 
-
     return image.img_to_array(img)
+    
