@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Predict Number List{% endblock %}
+
+{% block content %}
+<div class="container">
+  <a href="{% url 'mnist_predict:create' %}" class="btn btn-primary">Create</a>
+
+  <div class="row">
+    {% for object in object_list %}
+    <div class="card col-md-6">
+      <img src="{{ object.image_file.url }}" class="card-img-top">
+      <div class="card-body">
+        <p class="card-text">Predict Result: {{ object.predict_result }}<br>Actual Result: {{ object.actual_result }}</p>
+      </div>
+      <div class="card-footer">
+        <a href="{% url 'mnist_predict:detail' object.id %}" class="btn btn-primary">Detail</a>
+      </div>
+    </div>
+    {% empty %}
+    <div class="card col-md-6">
+      <div class="card-body">
+        <p class="card-text">No data.</p>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+</div>
+{% endblock content %}
+

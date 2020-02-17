@@ -71,11 +71,13 @@ THIRD_PARTY_APPS = [
     "allauth.socialaccount",
     "rest_framework",
     "django_celery_beat",
+    "django_celery_results",
 ]
 
 LOCAL_APPS = [
     "hands_on.users.apps.UsersConfig",
     # Your stuff: custom apps go here
+    "hands_on.mnist_predict.apps.MnistPredictConfig",
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -300,7 +302,9 @@ REST_FRAMEWORK = {
         "rest_framework.authentication.SessionAuthentication",
         "rest_framework.authentication.TokenAuthentication",
     ),
-    "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
+    # "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
 }
 # Your stuff...
 # ------------------------------------------------------------------------------
+
+CELERY_RESULT_BACKEND = 'django-db'

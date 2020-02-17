@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Predict Number List{% endblock %}
+
+{% block content %}
+<div class="container">
+  {{ object.task_id }}
+  <a href="{% url 'mnist_predict:update' object.id %}" class="btn btn-primary">Update</a>
+  <div class="row">
+    <div class="card col-md-6">
+      <img src="{{ object.image_file.url }}" class="card-img-top">
+      <div class="card-body">
+        <p class="card-text">Predict Result: {{ object.predict_result }}<br>Actual Result: {{ object.actual_result }}</p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}
+
